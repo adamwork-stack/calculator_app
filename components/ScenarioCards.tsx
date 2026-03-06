@@ -62,28 +62,31 @@ export function ScenarioCards({ baseResult, className = "" }: ScenarioCardsProps
 
   return (
     <div className={className}>
-      <h3 className="text-lg font-semibold text-slate-800 mb-3">
+      <h3 className="mb-4 text-lg font-semibold text-slate-900">
         Improvement scenarios
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <p className="mb-5 text-sm text-slate-600">
+        See how small changes could extend how long your savings last.
+      </p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {scenarios.map((s) => (
           <div
             key={s.label}
-            className="p-4 rounded-lg border border-slate-200 bg-white shadow-sm"
+            className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-5 transition-shadow hover:shadow-card"
           >
-            <p className="font-medium text-slate-700 text-sm">{s.label}</p>
+            <p className="font-semibold text-slate-800 text-sm">{s.label}</p>
             {s.depletionAge != null ? (
-              <p className="mt-1 text-slate-600 text-sm">
+              <p className="mt-2 text-slate-600 text-sm">
                 Savings last until age{" "}
-                <span className="font-semibold">{s.depletionAge}</span>
+                <span className="font-semibold text-slate-900">{s.depletionAge}</span>
                 {s.extendsByYears != null && s.extendsByYears > 0 && (
-                  <span className="text-emerald-600">
-                    {" "}(+{s.extendsByYears} years)
+                  <span className="ml-1 inline-flex items-center rounded-md bg-primary-100 px-1.5 py-0.5 text-xs font-medium text-primary-800">
+                    +{s.extendsByYears} yrs
                   </span>
                 )}
               </p>
             ) : (
-              <p className="mt-1 text-slate-600 text-sm">
+              <p className="mt-2 text-slate-600 text-sm">
                 Savings last through life expectancy. Final balance: $
                 {s.finalBalance.toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </p>

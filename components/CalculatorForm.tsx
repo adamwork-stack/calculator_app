@@ -18,6 +18,31 @@ interface CalculatorFormProps {
   isSubmitting?: boolean;
 }
 
+const fieldGroups = [
+  {
+    title: "Age & timeline",
+    fields: [
+      { key: "currentAge" as const, label: "Current age", min: 18, max: 100 },
+      { key: "retirementAge" as const, label: "Retirement age", min: 40, max: 100 },
+      { key: "lifeExpectancy" as const, label: "Life expectancy", min: 50, max: 120 },
+    ],
+  },
+  {
+    title: "Savings & spending",
+    fields: [
+      { key: "currentSavings" as const, label: "Current savings ($)", min: 0, step: 1000 },
+      { key: "monthlySpending" as const, label: "Monthly spending ($)", min: 0, step: 100 },
+    ],
+  },
+  {
+    title: "Assumptions",
+    fields: [
+      { key: "expectedReturnPercent" as const, label: "Expected return (%/year)", min: -10, max: 30, step: 0.5 },
+      { key: "inflationPercent" as const, label: "Inflation (%/year)", min: 0, max: 20, step: 0.5 },
+    ],
+  },
+];
+
 export function CalculatorForm({ onSubmit, isSubmitting }: CalculatorFormProps) {
   const [inputs, setInputs] = useState<CalculatorInputs>(defaultInputs);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,141 +81,45 @@ export function CalculatorForm({ onSubmit, isSubmitting }: CalculatorFormProps) 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {errors.form && (
-        <p className="text-red-600 text-sm" role="alert">
+        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {errors.form}
-        </p>
+        </div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">Current age</span>
-          <input
-            type="number"
-            min={18}
-            max={100}
-            value={inputs.currentAge}
-            onChange={(e) => update("currentAge", Number(e.target.value))}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900"
-          />
-          {errors.currentAge && (
-            <p className="text-red-600 text-xs mt-0.5">{errors.currentAge}</p>
-          )}
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">
-            Retirement age
-          </span>
-          <input
-            type="number"
-            min={40}
-            max={100}
-            value={inputs.retirementAge}
-            onChange={(e) => update("retirementAge", Number(e.target.value))}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900"
-          />
-          {errors.retirementAge && (
-            <p className="text-red-600 text-xs mt-0.5">{errors.retirementAge}</p>
-          )}
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">
-            Life expectancy
-          </span>
-          <input
-            type="number"
-            min={50}
-            max={120}
-            value={inputs.lifeExpectancy}
-            onChange={(e) => update("lifeExpectancy", Number(e.target.value))}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900"
-          />
-          {errors.lifeExpectancy && (
-            <p className="text-red-600 text-xs mt-0.5">{errors.lifeExpectancy}</p>
-          )}
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">
-            Current savings ($)
-          </span>
-          <input
-            type="number"
-            min={0}
-            step={1000}
-            value={inputs.currentSavings}
-            onChange={(e) => update("currentSavings", Number(e.target.value))}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900"
-          />
-          {errors.currentSavings && (
-            <p className="text-red-600 text-xs mt-0.5">{errors.currentSavings}</p>
-          )}
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">
-            Monthly spending ($)
-          </span>
-          <input
-            type="number"
-            min={0}
-            step={100}
-            value={inputs.monthlySpending}
-            onChange={(e) => update("monthlySpending", Number(e.target.value))}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900"
-          />
-          {errors.monthlySpending && (
-            <p className="text-red-600 text-xs mt-0.5">
-              {errors.monthlySpending}
-            </p>
-          )}
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">
-            Expected return (% per year)
-          </span>
-          <input
-            type="number"
-            min={-10}
-            max={30}
-            step={0.5}
-            value={inputs.expectedReturnPercent}
-            onChange={(e) =>
-              update("expectedReturnPercent", Number(e.target.value))
-            }
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900"
-          />
-          {errors.expectedReturnPercent && (
-            <p className="text-red-600 text-xs mt-0.5">
-              {errors.expectedReturnPercent}
-            </p>
-          )}
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">
-            Inflation (% per year)
-          </span>
-          <input
-            type="number"
-            min={0}
-            max={20}
-            step={0.5}
-            value={inputs.inflationPercent}
-            onChange={(e) => update("inflationPercent", Number(e.target.value))}
-            className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900"
-          />
-          {errors.inflationPercent && (
-            <p className="text-red-600 text-xs mt-0.5">
-              {errors.inflationPercent}
-            </p>
-          )}
-        </label>
+      {fieldGroups.map((group) => (
+        <div key={group.title}>
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500">
+            {group.title}
+          </h3>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {group.fields.map(({ key, label, min, max, step }) => (
+              <label key={key} className="block">
+                <span className="mb-1.5 block text-sm font-medium text-slate-700">
+                  {label}
+                </span>
+                <input
+                  type="number"
+                  min={min}
+                  max={max}
+                  step={step ?? 1}
+                  value={inputs[key]}
+                  onChange={(e) => update(key, Number(e.target.value))}
+                  className="input-base"
+                />
+                {errors[key] && (
+                  <p className="mt-1 text-xs text-red-600">{errors[key]}</p>
+                )}
+              </label>
+            ))}
+          </div>
+        </div>
+      ))}
+      <div className="pt-2">
+        <button type="submit" disabled={isSubmitting} className="btn-primary min-w-[140px]">
+          {isSubmitting ? "Calculating…" : "Calculate projection"}
+        </button>
       </div>
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full sm:w-auto px-6 py-2.5 bg-slate-800 text-white font-medium rounded-md hover:bg-slate-700 disabled:opacity-50"
-      >
-        {isSubmitting ? "Calculating…" : "Calculate"}
-      </button>
     </form>
   );
 }

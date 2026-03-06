@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Header } from "@/components/Header";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -13,29 +14,34 @@ function SuccessContent() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">
+      <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary-100 text-primary-600">
+        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
         Thank you for your purchase
       </h1>
-      <p className="text-slate-600 mb-8">
+      <p className="mt-2 text-slate-600">
         Your Retirement Strategy Report is ready to download.
       </p>
       {downloadUrl ? (
         <a
           href={downloadUrl}
           download="retirement-strategy-report.pdf"
-          className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-md hover:bg-emerald-700"
+          className="btn-primary mt-8"
         >
           Download PDF Report
         </a>
       ) : (
-        <p className="text-amber-700">
+        <p className="mt-6 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
           No session ID. If you just completed payment, try opening this page
           again from the link in your confirmation.
         </p>
       )}
-      <p className="mt-8">
-        <Link href="/" className="text-slate-600 underline hover:text-slate-800">
-          Back to calculator
+      <p className="mt-10">
+        <Link href="/" className="text-sm font-medium text-primary-600 hover:text-primary-700 hover:underline">
+          ← Back to calculator
         </Link>
       </p>
     </>
@@ -44,12 +50,15 @@ function SuccessContent() {
 
 export default function ReportSuccessPage() {
   return (
-    <main className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg mx-auto text-center">
-        <Suspense fallback={<p className="text-slate-600">Loading…</p>}>
-          <SuccessContent />
-        </Suspense>
-      </div>
-    </main>
+    <div className="min-h-screen bg-slate-50/80">
+      <Header />
+      <main className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
+        <div className="card card-elevated mx-auto max-w-md p-8 sm:p-10">
+          <Suspense fallback={<p className="text-slate-600">Loading…</p>}>
+            <SuccessContent />
+          </Suspense>
+        </div>
+      </main>
+    </div>
   );
 }

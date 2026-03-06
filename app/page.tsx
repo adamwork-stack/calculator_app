@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { CalculatorForm } from "@/components/CalculatorForm";
 import { ProjectionChart } from "@/components/ProjectionChart";
 import { ScenarioCards } from "@/components/ScenarioCards";
+import { Header } from "@/components/Header";
 import type { CalculatorInputs, ProjectionResult } from "@/lib/types";
 
 export default function Home() {
@@ -30,56 +31,82 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">
-          Retirement Savings Calculator
-        </h1>
-        <p className="text-slate-600 mb-8">
-          See how long your savings will last in retirement.
-        </p>
+    <div className="min-h-screen bg-slate-50/80">
+      <Header />
+      <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            Retirement Savings Calculator
+          </h1>
+          <p className="mt-2 text-lg text-slate-600">
+            See how long your savings will last in retirement with a monthly projection model.
+          </p>
+        </div>
 
-        <CalculatorForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+        <section className="card card-elevated mb-10 p-6 sm:p-8">
+          <h2 className="mb-6 text-xl font-semibold text-slate-900">
+            Your details
+          </h2>
+          <CalculatorForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+        </section>
 
         {result && (
-          <div ref={resultsRef} className="mt-12 pt-8 border-t border-slate-200">
-            <h2 className="text-xl font-semibold text-slate-800 mb-4">
+          <div ref={resultsRef} className="space-y-8">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
               Your projection
             </h2>
 
-            <div className="mb-6 p-4 rounded-lg bg-slate-50 border border-slate-200">
-              {result.depletionAge != null ? (
-                <p className="text-slate-700">
-                  <span className="font-semibold">Projected depletion age:</span>{" "}
-                  {result.depletionAge} — savings run out before life expectancy.
-                </p>
-              ) : (
-                <p className="text-slate-700">
-                  <span className="font-semibold">Savings last through life expectancy.</span>{" "}
-                  Projected balance at age {result.inputs.lifeExpectancy}: $
-                  {result.finalBalance.toLocaleString(undefined, {
-                    maximumFractionDigits: 0,
-                  })}
-                </p>
-              )}
-            </div>
+            <section className="card p-6 sm:p-8">
+              <div
+                className={
+                  result.depletionAge != null
+                    ? "rounded-xl border border-amber-200 bg-amber-50/80 px-5 py-4"
+                    : "rounded-xl border border-primary-200 bg-primary-50/80 px-5 py-4"
+                }
+              >
+                {result.depletionAge != null ? (
+                  <p className="text-slate-800">
+                    <span className="font-semibold">Projected depletion age: {result.depletionAge}</span>
+                    {" "}— savings run out before life expectancy. Consider the improvement scenarios below.
+                  </p>
+                ) : (
+                  <p className="text-slate-800">
+                    <span className="font-semibold">Savings last through life expectancy.</span>
+                    {" "}Projected balance at age {result.inputs.lifeExpectancy}: $
+                    {result.finalBalance.toLocaleString(undefined, { maximumFractionDigits: 0 })}.
+                  </p>
+                )}
+              </div>
+            </section>
 
-            <ProjectionChart result={result} className="mb-8" />
-            <ScenarioCards baseResult={result} className="mb-8" />
+            <section className="card p-6 sm:p-8">
+              <ProjectionChart result={result} />
+            </section>
 
-            <div className="p-4 rounded-lg border-2 border-slate-300 bg-white">
-              <p className="font-medium text-slate-800 mb-2">
-                Get your Retirement Strategy Report
-              </p>
-              <p className="text-slate-600 text-sm mb-4">
-                PDF summary of your inputs, projection chart, improvement strategies, and risk summary — $29.
-              </p>
-              <ReportButton result={result} />
-            </div>
+            <section className="card p-6 sm:p-8">
+              <ScenarioCards baseResult={result} />
+            </section>
+
+            <section className="card-elevated overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">
+                    Retirement Strategy Report
+                  </h3>
+                  <p className="mt-1 text-slate-600">
+                    PDF summary with your inputs, projection chart, improvement strategies, and risk summary.
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-slate-700">
+                    $29 one-time
+                  </p>
+                </div>
+                <ReportButton result={result} />
+              </div>
+            </section>
           </div>
         )}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 
@@ -119,9 +146,9 @@ function ReportButton({ result }: { result: ProjectionResult }) {
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className="px-5 py-2.5 bg-emerald-600 text-white font-medium rounded-md hover:bg-emerald-700 disabled:opacity-50"
+      className="btn-primary shrink-0"
     >
-      {loading ? "Redirecting…" : "Get PDF Report ($29)"}
+      {loading ? "Redirecting…" : "Get PDF Report — $29"}
     </button>
   );
 }
