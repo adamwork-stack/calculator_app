@@ -18,27 +18,35 @@ interface CalculatorFormProps {
   isSubmitting?: boolean;
 }
 
-const fieldGroups = [
+type FieldConfig = {
+  key: keyof CalculatorInputs;
+  label: string;
+  min: number;
+  max?: number;
+  step?: number;
+};
+
+const fieldGroups: { title: string; fields: FieldConfig[] }[] = [
   {
     title: "Age & timeline",
     fields: [
-      { key: "currentAge" as const, label: "Current age", min: 18, max: 100 },
-      { key: "retirementAge" as const, label: "Retirement age", min: 40, max: 100 },
-      { key: "lifeExpectancy" as const, label: "Life expectancy", min: 50, max: 120 },
+      { key: "currentAge", label: "Current age", min: 18, max: 100 },
+      { key: "retirementAge", label: "Retirement age", min: 40, max: 100 },
+      { key: "lifeExpectancy", label: "Life expectancy", min: 50, max: 120 },
     ],
   },
   {
     title: "Savings & spending",
     fields: [
-      { key: "currentSavings" as const, label: "Current savings ($)", min: 0, step: 1000 },
-      { key: "monthlySpending" as const, label: "Monthly spending ($)", min: 0, step: 100 },
+      { key: "currentSavings", label: "Current savings ($)", min: 0, step: 1000 },
+      { key: "monthlySpending", label: "Monthly spending ($)", min: 0, step: 100 },
     ],
   },
   {
     title: "Assumptions",
     fields: [
-      { key: "expectedReturnPercent" as const, label: "Expected return (%/year)", min: -10, max: 30, step: 0.5 },
-      { key: "inflationPercent" as const, label: "Inflation (%/year)", min: 0, max: 20, step: 0.5 },
+      { key: "expectedReturnPercent", label: "Expected return (%/year)", min: -10, max: 30, step: 0.5 },
+      { key: "inflationPercent", label: "Inflation (%/year)", min: 0, max: 20, step: 0.5 },
     ],
   },
 ];
@@ -93,22 +101,22 @@ export function CalculatorForm({ onSubmit, isSubmitting }: CalculatorFormProps) 
             {group.title}
           </h3>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {group.fields.map(({ key, label, min, max, step }) => (
-              <label key={key} className="block">
+            {group.fields.map((field) => (
+              <label key={field.key} className="block">
                 <span className="mb-1.5 block text-sm font-medium text-slate-700">
-                  {label}
+                  {field.label}
                 </span>
                 <input
                   type="number"
-                  min={min}
-                  max={max}
-                  step={step ?? 1}
-                  value={inputs[key]}
-                  onChange={(e) => update(key, Number(e.target.value))}
+                  min={field.min}
+                  max={field.max}
+                  step={field.step ?? 1}
+                  value={inputs[field.key]}
+                  onChange={(e) => update(field.key, Number(e.target.value))}
                   className="input-base"
                 />
-                {errors[key] && (
-                  <p className="mt-1 text-xs text-red-600">{errors[key]}</p>
+                {errors[field.key] && (
+                  <p className="mt-1 text-xs text-red-600">{errors[field.key]}</p>
                 )}
               </label>
             ))}
